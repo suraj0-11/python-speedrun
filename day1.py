@@ -6,7 +6,7 @@ print(f"Hello {name.upper()}")
 
 print(f"\t{name}")
 
-#using rstrip it removes blank space.
+#using rstrip it removes blank space
 name_2 = 'suraj   '
 print(name_2)
 print(name_2.rstrip())
