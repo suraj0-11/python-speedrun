@@ -78,3 +78,37 @@ def make_pizza(*toppings):
 
 make_pizza('pepperoni')
 make_pizza('mushrooms', 'green peppers', 'extra cheese')
+
+
+class Human():
+    def __init__(self,name,age,gender):
+        self.name = name
+        self.age = age
+        age = str(age)
+        self.gender = gender
+
+    def get_info(self):
+        print(f"This human name is {self.name} and he is age of {self.age} and a {self.gender}")
+
+human = Human('suraj',21,'male')
+new_human = Human('chinmay',21,'female')
+human.get_info()
+new_human.get_info()
+
+with open('pi.txt') as pifile:
+    contents = pifile.read()
+    print(contents)
+
+filename = '10m.txt'
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+pi_string = ''
+for line in lines:
+    pi_string += line.rstrip()
+
+bday = input("Enter your bday date ddmmyy : ")
+if bday in pi_string:
+    print("yes")
+else:
+    print("rip")
