@@ -107,8 +107,39 @@ pi_string = ''
 for line in lines:
     pi_string += line.rstrip()
 
-bday = input("Enter your bday date ddmmyy : ")
+# bday = input("Enter your bday date ddmmyy : ")
+bday = '130803'
 if bday in pi_string:
     print("yes")
 else:
     print("rip")
+
+
+with open('pi.txt') as fileobj:
+    contents = fileobj.read()
+    words = contents.split()
+    total = len(words)
+    print(f"so pi.txt contains about {total} words for now")
+
+import json
+
+nums = [1,2,3,4,5,6]
+with open('num.json','w') as fobj:
+    json.dump(nums,fobj)
+
+
+with open('num.json','r') as fobj:
+    number = json.load(fobj)
+print(number)
+
+username = input("Enter your username : ")
+
+with open('num.json','w') as newobj:
+    json.dump(username,newobj)
+
+password = input("Enter the password : ")
+with open('num.json','a') as newobj:
+    json.dump(password,newobj)
+
+
+
