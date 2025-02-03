@@ -13,7 +13,7 @@ jobs:
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       REVIEW_CATEGORIES: |
-        # Advanced Code Analysis Pre-Prompt
+        # Advanced Code Analysis Pre-Prompt.
         ## Primary Analysis Parameters
         Perform a comprehensive static and dynamic code analysis with the following focus areas:
         ### 1. Metric Collection
