@@ -13,7 +13,7 @@ jobs:
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       REVIEW_CATEGORIES: |
-        # Advanced Code Analysis Pre-Prompt.
+        # Advanced Code Analysis Pre-Prompt
         ## Primary Analysis Parameters
         Perform a comprehensive static and dynamic code analysis with the following focus areas:
         ### 1. Metric Collection
@@ -101,7 +101,6 @@ jobs:
                 "contents": [{"parts": [{"text": prompt}]}]
             }
             
-            # Send request to Gemini API
             response = requests.post(
                 f"{GEMINI_API_URL}?key={API_KEY}", 
                 headers=HEADERS, 
@@ -111,9 +110,8 @@ jobs:
             if response.status_code == 200:
                 review_text = response.json()['candidates'][0]['content']['parts'][0]['text']
                 
-                # Ensure the file name is always included in the review result
                 if filename not in review_text:
-                    review_text = f"File: {filename}\n\n{review_text}"
+                    review_text = f"### File: {filename}\n\n{review_text}"
                 
                 return review_text
             else:
@@ -123,27 +121,30 @@ jobs:
             try:
                 with open(file_path, 'r', encoding='utf-8') as file:
                     code = file.read()
-                    review = review_code(code, file_path)
-                    return review
+                    return review_code(code, file_path)
             except Exception as e:
                 print(f"Error reviewing {file_path}: {str(e)}")
                 return None
 
         def generate_report(reviews):
-            report = "# 🤖 AI Code Review Report\n\n"
+            report = "<div align='center'>\n\n"
+            report += "![CodeSense Logo](../logo.png)\n\n"  # Adding the logo
+            report += "</div>\n\n"
+    
+            report += "# CodeSense Review Report\n\n"
             report += "### Here are the detailed reviews for your code:\n\n"
-            
+
             if not reviews:
                 report += "No files were reviewed.\n"
                 return report
-                
+
             report += f"## Overview\n\n**Files Reviewed:** {len(reviews)}\n\n"
-            
+
             for review in reviews:
                 if review:
                     report += f"## Review\n\n{review}\n\n"
                     report += "---\n\n"
-            
+
             return report
 
         reviews = []
@@ -165,10 +166,15 @@ jobs:
                     reviews.append(review)
         
         report = generate_report(reviews)
-        with open('code-reviews/review_report.md', 'w', encoding='utf-8') as f:
+        
+        # Create code-reviews directory if it doesn't exist
+        os.makedirs('code-reviews', exist_ok=True)
+        
+        # Save the report to code-reviews/review-report.md
+        with open('code-reviews/review-report.md', 'w', encoding='utf-8') as f:
             f.write(report)
         
-        print("Review completed. Report generated at code-reviews/review_report.md")
+        print("Review completed. Report generated at code-reviews/review-report.md")
         EOF
     
     - name: Run Code Review
@@ -176,16 +182,10 @@ jobs:
         mkdir -p code-reviews
         python3 review_code.py
     
-    - name: Add Review Results to README
-      run: |
-        # Append the review report to the README file
-        cat code-reviews/review_report.md >> README.md
-        echo "Review results added to README.md"
-    
     - name: Commit Review Results
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git add README.md || true
-        git commit -m "Add AI Code Review Results to README [skip ci]" || true
+        git add code-reviews/review-report.md || true
+        git commit -m "Add AI Code Review Results [skip ci]" || true
         git push || true
